@@ -5,7 +5,7 @@ router.get('/', async (ctx, next) => {
 
   const result = await Blog.findAndCountAll({
     limit: 3,
-    offset: 1,
+    offset: 2,
     include: {
       model: User,
       attributes: ['userName', 'nickName']
