@@ -4,17 +4,26 @@ const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
+const jwtKoa = require('koa-jwt')
 const logger = require('koa-logger')
 
 const index = require('./routes/index')
 const users = require('./routes/users')
+const error = require('./routes/view/error')
+const { SECRET } = require('./db/config/config')
 
 // error handler
 onerror(app)
 
+app.use(jwtKoa({
+  secret: SECRET 
+}).unless({
+  path: [/^\/json/,/^\/string/, /^\/login/,/^\/getUserInfo/]  // 不需要验证token的路由
+}))
+
 // middlewares
 app.use(bodyparser({
-  enableTypes:['json', 'form', 'text']
+  enableTypes: ['json', 'form', 'text']
 }))
 app.use(json())
 // app.use(logger())
@@ -35,6 +44,7 @@ app.use(views(__dirname + '/views', {
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
+// app.use(error.routes(), error.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
