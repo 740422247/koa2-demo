@@ -4,6 +4,6 @@
  */
 
 module.exports = {
-  CRYPTO_SECRET_KEY: 'SD123ui_sd$@',
-  SESSION_SECRET_KEY: 'laotie'
+  CRYPTO_SECRET_KEY: 'SD123fdui_sd$@',
+  SESSION_SECRET_KEY: 'grgrf$#_-%8fgr8'
 }
