@@ -7,18 +7,27 @@ const bodyparser = require('koa-bodyparser')
 const jwtKoa = require('koa-jwt')
 const logger = require('koa-logger')
 
-const index = require('./routes/index')
-const users = require('./routes/users')
-const error = require('./routes/view/error')
-const { SECRET } = require('./db/config/config')
+// const index = require('./routes/index')
+// const users = require('./routes/users')
+
+// 路由
+const UserApiRouter = require('./routes/api/user')
+const UserViewRouter = require('./routes/views/User')
+const errorViewRouter = require('./routes/views/error')
+
+const { SESSION_SECRET_KEY } = require('./db/config/secretKeys')
 
 // error handler
-onerror(app)
+const onerrorConf = {
+  redirect: '/error'
+}
+onerror(app, onerrorConf)
 
 app.use(jwtKoa({
-  secret: SECRET 
+  secret: SESSION_SECRET_KEY 
 }).unless({
-  path: [/^\/json/,/^\/string/, /^\/login/,/^\/getUserInfo/]  // 不需要验证token的路由
+path: [/^\/*/]  //完全不需要验证token
+  // path: [/^\/json/,/^\/string/, /^\/login/,/^\/getUserInfo/]  // 不需要验证token的路由
 }))
 
 // middlewares
@@ -30,8 +39,8 @@ app.use(json())
 app.use(require('koa-static')(__dirname + '/public'))
 
 app.use(views(__dirname + '/views', {
-  extension: 'pug'
-}))
+  extension: 'ejs'
+}))  // 使用ejs文件
 
 // logger
 // app.use(async (ctx, next) => {
@@ -41,10 +50,10 @@ app.use(views(__dirname + '/views', {
 //   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 // })
 
-// routes
-app.use(index.routes(), index.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
-// app.use(error.routes(), error.allowedMethods())
+// routes 注册
+app.use(UserApiRouter.routes(), UserApiRouter.allowedMethods())
+app.use(UserViewRouter.routes(), UserViewRouter.allowedMethods())
+app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {

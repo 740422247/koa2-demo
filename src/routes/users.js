@@ -1,13 +1,15 @@
 const router = require('koa-router')()
+const {
+  User
+} = require('../db/models/index');
+const {getUserMessage} = require('./common')
 
 router.prefix('/users')
 
-router.get('/', function (ctx, next) {
-  const params = ctx.query
-  ctx.body = {
-    params,
-    content: 'this is users 0'
-  }
+router.get('/getAll', async (ctx, next) => {
+  const userInfo = await getUserMessage(ctx)
+  console.log(userInfo);
+  ctx.body = 'get users all'
 })
 
 router.get('/bar', function (ctx, next) {

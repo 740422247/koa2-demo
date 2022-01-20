@@ -5,7 +5,7 @@ const conf = {
   dialect: 'mysql'
 }
 
-const seq = new Sequelize('test', 'root', '123456', conf);
+const seq = new Sequelize('blog', 'root', '123456', conf);
 
 // seq.authenticate().then(() => {
 //   console.log('success')
